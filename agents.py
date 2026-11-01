@@ -1,0 +1,124 @@
+"""Run one episode with a native CLI (Claude Code, Codex) or the Qwen loop in a work directory.
+
+Isolation (spec, "Aislamiento"): Claude Code without user settings, hooks, CLAUDE.md or MCP, and
+with only its six working tools; Codex with its own CODEX_HOME (auth.json + config.toml that
+disables every user skill), plugins off, ephemeral, stdin closed.
+"""
+from __future__ import annotations
+
+import json
+import os
+import shutil
+from pathlib import Path
+
+import proctree
+import qwen_loop
+import setup_env
+
+HERE = Path(__file__).parent
+# One Codex home shared by every run; model and effort go as flags. One home per world made the
+# homes reset each other's Windows sandbox users (each keeps its own password), forcing a full
+# sandbox setup on almost every call (2026-10-31). Not under %TEMP%: Codex refuses to keep its
+# sandbox helper binaries there.
+CODEX_HOME = Path.home() / ".pe2-codex" / "codexhome"
+CLAUDE_TOOLS = "Bash,Read,Edit,Write,Grep,Glob"
+# Edit/Write only inside the work copy (checked 2026-10-31: a bare "Write" allow wrote outside it).
+CLAUDE_ALLOWED = "Bash,Read,Grep,Glob,Edit(./**),Write(./**)"
+
+
+MATHLIB_LEAN_PATH = Path.home() / "lean" / "pe2math-LEAN_PATH.txt"
+# elan's default toolchain on this machine, the one worlds B and C were built and checked with
+LEAN_TOOLCHAIN_BIN = Path.home() / ".elan" / "toolchains" / "leanprover--lean4---v4.35.0" / "bin"
+
+
+def env_for(world: str) -> dict:
+    env = dict(os.environ)
+    if world in ("b", "c"):
+        # elan finds its home through the user profile, which the Codex sandbox user does not share:
+        # without this, `lean` in Codex's sandbox fails with "couldn't find value of ELAN_HOME"
+        # (found 2026-11-01; Luna never got one compile through in 27 of 78 world-B episodes).
+        env["ELAN_HOME"] = str(Path.home() / ".elan")
+        # and the elan proxy is extremely slow there (a Mathlib compile: 9.5 min through `lean`,
+        # 30 s through the toolchain's lean.exe, 2026-11-01): put the real binary first on PATH.
+        env["PATH"] = str(LEAN_TOOLCHAIN_BIN) + os.pathsep + env["PATH"]
+    if world == "c":  # Mathlib trial: plain `lean` finds Mathlib through the project's LEAN_PATH
+        env["LEAN_PATH"] = MATHLIB_LEAN_PATH.read_text(encoding="utf-8").strip()
+    if world == "a":
+        env["PATH"] = str(setup_env.python().parent) + os.pathsep + env["PATH"]
+        env["PYTHONPATH"] = "src"
+    return env
+
+
+def prepare_codex_home() -> Path:
+    home = CODEX_HOME
+    home.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(Path.home() / ".codex" / "auth.json", home / "auth.json")
+    # [windows] sandbox: without it the isolated home has no working sandbox and every command is
+    # "blocked by policy" (observed 2026-10-30); the user's own config sets it to "elevated".
+    lines = ["[windows]", 'sandbox = "elevated"', ""]
+    for root in (Path.home() / ".agents" / "skills", Path.home() / ".codex" / "skills"):
+        if root.exists():
+            for p in sorted(root.rglob("SKILL.md")):
+                lines += ["[[skills.config]]", f"path = '{p}'", "enabled = false", ""]
+    config = home / "config.toml"
+    text = "\n".join(lines)
+    if not config.exists() or config.read_text(encoding="utf-8") != text:  # another run may be reading it
+        config.write_text(text, encoding="utf-8")
+    sync_sandbox_users()
+    return home
+
+
+SANDBOX_STATE = (Path(".sandbox-secrets") / "sandbox_users.json", Path(".sandbox") / "setup_marker.json")
+
+
+def sync_sandbox_users() -> None:
+    """Every Codex home on this machine shares the Windows users CodexSandboxOffline/Online but keeps
+    its own copy of their passwords: when one home re-creates the users, the others must redo the
+    full sandbox setup (a window each time). Copy the newest password file and marker to the other
+    side, so the experiment and the user's own Codex never invalidate each other."""
+    user = Path.home() / ".codex"
+    ours, theirs = CODEX_HOME / SANDBOX_STATE[0], user / SANDBOX_STATE[0]
+    if not ours.exists() and not theirs.exists():
+        return
+    src, dst = (CODEX_HOME, user) if ours.exists() and (not theirs.exists() or ours.stat().st_mtime > theirs.stat().st_mtime) else (user, CODEX_HOME)
+    for rel in SANDBOX_STATE:
+        if (src / rel).exists() and (not (dst / rel).exists() or (src / rel).read_bytes() != (dst / rel).read_bytes()):
+            (dst / rel).parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(src / rel, dst / rel)
+
+
+def codex_cmd(model: str, effort: str) -> list[str]:
+    return [shutil.which("codex") or "codex", "exec", "-m", model, "-c", f'model_reasoning_effort="{effort}"',
+            "--json", "--ephemeral", "--skip-git-repo-check", "--disable", "plugins", "-s", "workspace-write", "-"]
+
+
+def run_claude(model: str, work: Path, prompt: str, world: str, timeout=1800) -> dict:
+    cmd = [shutil.which("claude") or "claude", "-p", prompt, "--model", model, "--setting-sources", "",
+           "--strict-mcp-config", "--tools", CLAUDE_TOOLS, "--allowedTools", CLAUDE_ALLOWED,
+           "--output-format", "stream-json", "--verbose", "--no-session-persistence", "--max-turns", "80"]
+    r = proctree.run(cmd, cwd=work, env=env_for(world), text=True, encoding="utf-8", timeout=timeout, hidden=True)
+    lines = r.stdout.splitlines()
+    result = next((json.loads(l) for l in reversed(lines) if '"type":"result"' in l.replace(" ", "")), {})
+    init = next((json.loads(l) for l in lines if '"subtype":"init"' in l.replace(" ", "")), {})
+    return {"events": lines, "resolved_model": init.get("model"), "stop": result.get("subtype", f"exit {r.returncode}"),
+            "usage": result.get("usage"), "api_equivalent_usd": result.get("total_cost_usd"),
+            "stderr": r.stderr[-800:]}
+
+
+def run_codex(model: str, effort: str, work: Path, prompt: str, world: str, timeout=1800) -> dict:
+    env = env_for(world) | {"CODEX_HOME": str(prepare_codex_home())}
+    # Prompt goes via stdin ("-"): codex is a .CMD shim on Windows and cmd.exe truncates argv at the first newline.
+    # input= also gives EOF after the prompt, so stdin stays isolated.
+    try:
+        r = proctree.run(codex_cmd(model, effort), cwd=work, env=env, text=True, encoding="utf-8", timeout=timeout,
+                         input=prompt, hidden=True)
+    finally:
+        sync_sandbox_users()  # if this run re-created the users, hand the new passwords to the user's Codex
+    lines = r.stdout.splitlines()
+    usage = next((json.loads(l).get("usage") for l in reversed(lines) if "turn.completed" in l), None)
+    return {"events": lines, "resolved_model": model, "stop": "done" if r.returncode == 0 else f"exit {r.returncode}",
+            "usage": usage, "stderr": r.stderr[-800:]}
+
+
+def run_qwen(model_cfg: dict, work: Path, prompt: str, world: str) -> dict:
+    return qwen_loop.run(model_cfg, work, prompt, env_for(world))

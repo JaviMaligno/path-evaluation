@@ -1,0 +1,15 @@
+{
+  "id": "t03-mylen-map",
+  "name": "myLen_map",
+  "difficulty": "easy",
+  "prelude": "def myLen : List α → Nat\n  | [] => 0\n  | _ :: xs => myLen xs + 1\n",
+  "statement": "theorem myLen_map (f : α → β) (xs : List α) : myLen (xs.map f) = myLen xs",
+  "proofs": [
+    "  induction xs with\n  | nil => rfl\n  | cons x xs ih => simp [myLen, ih]\n",
+    "  have len_a (zs : List α) : myLen zs = zs.length := by\n    induction zs with\n    | nil => rfl\n    | cons z zs ih => simp [myLen, ih]\n  have len_b (zs : List β) : myLen zs = zs.length := by\n    induction zs with\n    | nil => rfl\n    | cons z zs ih => simp [myLen, ih]\n  rw [len_b, len_a, List.length_map]\n"
+  ],
+  "strategies": [
+    "Direct structural induction on xs.",
+    "Prove length characterizations at both element types and use length_map."
+  ]
+}

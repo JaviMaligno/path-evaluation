@@ -1,0 +1,5 @@
+{"tool": "read_file", "args": {"path": "Main.lean"}}
+{"tool": "replace_in_file", "args": {"path": "Main.lean", "old": "theorem plus_eq_add (n m : Nat) : plus n m = n + m := by\n  sorry", "new": "theorem plus_eq_add (n m : Nat) : plus n m = n + m := by\n  induction m with\n  | zero => rfl\n  | succ m ih =>\n    rw [plus.mpr, Nat.succ_eq_add_one]\n    rw [add_assoc]\n    rw [ih]\n    rfl"}}
+{"tool": "run_command", "args": {"command": "lean Main.lean"}}
+{"tool": "replace_in_file", "args": {"path": "Main.lean", "old": "theorem plus_eq_add (n m : Nat) : plus n m = n + m := by\n  induction m with\n  | zero => rfl\n  | succ m ih =>\n    rw [plus.mpr, Nat.succ_eq_add_one]\n    rw [add_assoc]\n    rw [ih]\n    rfl", "new": "theorem plus_eq_add (n m : Nat) : plus n m = n + m := by\n  induction m with\n  | zero => rfl\n  | succ m ih =>\n    simp [plus] at *\n    rw [ih]\n    rfl"}}
+{"tool": "run_command", "args": {"command": "lean Main.lean"}}

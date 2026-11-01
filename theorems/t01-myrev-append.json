@@ -1,0 +1,15 @@
+{
+  "id": "t01-myrev-append",
+  "name": "myRev_append",
+  "difficulty": "easy",
+  "prelude": "def myRev : List α → List α\n  | [] => []\n  | x :: xs => myRev xs ++ [x]\n",
+  "statement": "theorem myRev_append (xs ys : List α) : myRev (xs ++ ys) = myRev ys ++ myRev xs",
+  "proofs": [
+    "  induction xs with\n  | nil => simp [myRev]\n  | cons x xs ih => simp [myRev, ih, List.append_assoc]\n",
+    "  have rev_eq (zs : List α) : myRev zs = zs.reverse := by\n    induction zs with\n    | nil => rfl\n    | cons z zs ih => simp [myRev, ih, List.reverse_cons]\n  simp [rev_eq, List.reverse_append]\n"
+  ],
+  "strategies": [
+    "Structural induction on xs, reassociating append.",
+    "Identify myRev with library reverse in a helper, then use reverse_append."
+  ]
+}

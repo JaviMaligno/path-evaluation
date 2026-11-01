@@ -1,0 +1,6 @@
+.venv/
+.testenv/
+__pycache__/
+*.pyc
+runs/STOP-*
+runs/mem.log

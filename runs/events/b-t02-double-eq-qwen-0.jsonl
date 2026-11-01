@@ -1,0 +1,3 @@
+{"tool": "read_file", "args": {"path": "Main.lean"}}
+{"tool": "replace_in_file", "args": {"path": "Main.lean", "old": "theorem double_eq (n : Nat) : double n = 2 * n := by\n  sorry", "new": "theorem double_eq (n : Nat) : double n = 2 * n := by\n  induction n with\n  | zero => rfl\n  | succ n ih =>\n    rw [double, ih, Nat.mul_succ]"}}
+{"tool": "run_command", "args": {"command": "lean Main.lean"}}

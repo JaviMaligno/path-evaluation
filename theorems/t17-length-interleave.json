@@ -1,0 +1,15 @@
+{
+  "id": "t17-length-interleave",
+  "name": "length_interleave",
+  "difficulty": "hard",
+  "prelude": "def interleave : List α → List α → List α\n  | [], ys => ys\n  | x :: xs, ys => x :: interleave ys xs\ntermination_by xs ys => xs.length + ys.length\n",
+  "statement": "theorem length_interleave (xs ys : List α) :\n    (interleave xs ys).length = xs.length + ys.length",
+  "proofs": [
+    "  induction xs, ys using interleave.induct with\n  | case1 ys => simp [interleave]\n  | case2 x xs ys ih => simp [interleave, ih]; omega\n",
+    "  have bounded (n : Nat) : ∀ (as bs : List α), as.length + bs.length = n →\n      (interleave as bs).length = as.length + bs.length := by\n    induction n using Nat.strongRecOn with\n    | ind n ih =>\n      intro as bs h\n      cases as with\n      | nil => simp [interleave]\n      | cons a as =>\n        have step := ih (bs.length + as.length) (by simp at h; omega) bs as rfl\n        simp [interleave, step]\n        omega\n  exact bounded _ xs ys rfl\n"
+  ],
+  "strategies": [
+    "Functional induction following interleave and its argument swaps.",
+    "Strong induction on the combined list lengths via a bounded helper."
+  ]
+}

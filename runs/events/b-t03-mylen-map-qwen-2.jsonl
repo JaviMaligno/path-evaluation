@@ -1,0 +1,5 @@
+{"tool": "read_file", "args": {"path": "Main.lean"}}
+{"tool": "replace_in_file", "args": {"path": "Main.lean", "old": "theorem myLen_map (f : \u03b1 \u2192 \u03b2) (xs : List \u03b1) : myLen (xs.map f) = myLen xs := by\n  sorry", "new": "theorem myLen_map (f : \u03b1 \u2192 \u03b2) (xs : List \u03b1) : myLen (xs.map f) = myLen xs := by\n  induction xs with\n  | nil => rfl\n  | cons a as ih =>\n      simp [List.map_cons]\n      <;> rw [ih]"}}
+{"tool": "run_command", "args": {"command": "lean Main.lean"}}
+{"tool": "replace_in_file", "args": {"path": "Main.lean", "old": "theorem myLen_map (f : \u03b1 \u2192 \u03b2) (xs : List \u03b1) : myLen (xs.map f) = myLen xs := by\n  induction xs with\n  | nil => rfl\n  | cons a as ih =>\n      simp [List.map_cons]\n      <;> rw [ih]", "new": "theorem myLen_map (f : \u03b1 \u2192 \u03b2) (xs : List \u03b1) : myLen (xs.map f) = myLen xs := by\n  induction xs with\n  | nil => rfl\n  | cons a as ih =>\n      simp [myLen, List.map_cons] at *\n      <;> omega"}}
+{"tool": "run_command", "args": {"command": "lean Main.lean"}}

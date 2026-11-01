@@ -1,0 +1,15 @@
+{
+  "id": "t18-fib-le-pow",
+  "name": "fib_le_pow",
+  "difficulty": "hard",
+  "prelude": "def fib : Nat → Nat\n  | 0 => 0\n  | 1 => 1\n  | n + 2 => fib n + fib (n + 1)\n",
+  "statement": "theorem fib_le_pow (n : Nat) : fib n ≤ 2 ^ n",
+  "proofs": [
+    "  induction n using Nat.strongRecOn with\n  | ind n ih =>\n    cases n with\n    | zero => decide\n    | succ n => cases n with\n      | zero => decide\n      | succ n =>\n        have h0 := ih n (by omega)\n        have h1 := ih (n + 1) (by omega)\n        simp only [fib, Nat.pow_succ] at *\n        omega\n",
+    "  have pair (k : Nat) : fib k ≤ 2 ^ k ∧ fib (k + 1) ≤ 2 ^ (k + 1) := by\n    induction k with\n    | zero => decide\n    | succ k ih =>\n      constructor\n      · exact ih.2\n      · simp only [fib, Nat.pow_succ] at *; omega\n  exact (pair n).1\n"
+  ],
+  "strategies": [
+    "Strong induction using bounds at both smaller indices.",
+    "Ordinary induction on a strengthened pair of consecutive bounds."
+  ]
+}

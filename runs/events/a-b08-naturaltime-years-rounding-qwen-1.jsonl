@@ -1,0 +1,12 @@
+{"tool": "read_file", "args": {"path": "tests/test_issue.py"}}
+{"tool": "run_command", "args": {"command": "cd /testbed && python -m pytest tests/test_issue.py -v -p no:cacheprovider --deselect tests/test_i18n.py::test_update_translations"}}
+{"tool": "run_command", "args": {"command": "pwd && ls -la"}}
+{"tool": "run_command", "args": {"command": "python -m pytest tests/test_issue.py -v -p no:cacheprovider --deselect tests/test_i18n.py::test_update_translations"}}
+{"tool": "list_dir", "args": {"path": "src"}}
+{"tool": "list_dir", "args": {"path": "src/humanize"}}
+{"tool": "read_file", "args": {"path": "src/humanize/time.py"}}
+{"tool": "run_command", "args": {"command": "python -c \"import datetime as dt; print(dt.timedelta(days=365*2.6))\""}}
+{"tool": "read_file", "args": {"path": "src/humanize/time.py", "offset": "180", "end_line": "240"}}
+{"tool": "replace_in_file", "args": {"path": "src/humanize/time.py", "old": "    years = int(delta.days / 365)\n    return _ngettext(\"%d year\", \"%d years\", years).replace(\"%d\", \"%s\") % intcomma(years)", "new": "    years = round(delta.days / 365)\n    return _ngettext(\"%d year\", \"%d years\", years).replace(\"%d\", \"%s\") % intcomma(years)"}}
+{"tool": "run_command", "args": {"command": "python -m pytest tests/test_issue.py::test_naturaltime_2_6_years -v -p no:cacheprovider --deselect tests/test_i18n.py::test_update_translations"}}
+{"tool": "run_command", "args": {"command": "python -m pytest -q -p no:cacheprovider --ignore=tests/test_benchmarks.py --deselect tests/test_i18n.py::test_update_translations"}}

@@ -1,0 +1,3 @@
+{"tool": "read_file", "args": {"path": "Main.lean"}}
+{"tool": "replace_in_file", "args": {"path": "Main.lean", "old": "theorem plus_eq_add (n m : Nat) : plus n m = n + m := by\n  sorry", "new": "theorem plus_eq_add (n m : Nat) : plus n m = n + m := by\n  induction m with\n  | zero => rfl\n  | succ m ih => rw [plus]; omega"}}
+{"tool": "run_command", "args": {"command": "lean Main.lean"}}

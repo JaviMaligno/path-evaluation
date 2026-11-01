@@ -1,0 +1,503 @@
+{
+ "b01-ordinal-teens": {
+  "tests/test_hidden.py::test_teens_all_th": {
+   "votes": [
+    "yes",
+    "yes",
+    "yes"
+   ],
+   "majority": "yes",
+   "why": [
+    "The report's defect is that numbers ending in 13 (n % 100 == 13) get 'rd' instead of 'th', and 13, 213 and 1013 fall in that same class, so any genuine fix rather than a hardcoded special case for 113 makes them end in 'th'.",
+    "The defect is the English rule that numbers whose last two digits are 11–13 take 'th', so any correct fix for 113 also gives 13, 213 and 1013 a 'th' suffix.",
+    "The report's defect is the wrong suffix for a number ending in 13 above 100, so any genuine fix applying the English teen rule (n % 100 in 11–13 gets 'th') must also give 13th, 213th and 1013th."
+   ]
+  }
+ },
+ "b02-fractional-whole-part": {
+  "tests/test_hidden.py::test_mixed_numbers_keep_whole_part[3.5-3 1/2]": {
+   "votes": [
+    "yes",
+    "yes",
+    "yes"
+   ],
+   "majority": "yes",
+   "why": [
+    "It is a positive mixed number with an exact fraction, which is exactly the case the report covers, so any fix that keeps the whole part gives '3 1/2'.",
+    "This is the same positive mixed-number case as the report's example, so any fix that restores the whole part yields '3 1/2'.",
+    "This is a positive mixed number like the report's 2.75, so any fix that restores the whole part must produce '3 1/2'."
+   ]
+  },
+  "tests/test_hidden.py::test_mixed_numbers_keep_whole_part[10.2-10 1/5]": {
+   "votes": [
+    "yes",
+    "yes",
+    "yes"
+   ],
+   "majority": "yes",
+   "why": [
+    "It is a positive mixed number whose fractional part reduces to 1/5 under the existing denominator limiting, so keeping the whole part gives '10 1/5'.",
+    "Restoring the whole part leaves the existing fraction approximation unchanged, and it already reduces 0.2 to 1/5, so the result is '10 1/5'.",
+    "This is a positive mixed number whose fractional part reduces cleanly to 1/5, so restoring the whole part yields '10 1/5'."
+   ]
+  },
+  "tests/test_hidden.py::test_mixed_numbers_keep_whole_part[-4.25--4 1/4]": {
+   "votes": [
+    "no",
+    "no",
+    "no"
+   ],
+   "majority": "no",
+   "why": [
+    "The report says nothing about negative numbers, and a correct fix could reasonably output '-4 -1/4' (as upstream humanize does) instead of '-4 1/4'.",
+    "The report says nothing about negatives, and a fix that only restores the whole part can naturally give '-4 -1/4' because the fractional remainder is negative.",
+    "The report says nothing about negative values, and a correct fix that takes the whole part with int() and subtracts it naturally produces '-4 -1/4' rather than '-4 1/4'."
+   ]
+  },
+  "tests/test_hidden.py::test_mixed_numbers_keep_whole_part[7.125-7 1/8]": {
+   "votes": [
+    "yes",
+    "yes",
+    "yes"
+   ],
+   "majority": "yes",
+   "why": [
+    "fractional already converts its input with float(), so a string input is unaffected by the fix, and keeping the whole part gives '7 1/8'.",
+    "The function already converts string input to a float, so restoring the whole part yields '7 1/8'.",
+    "fractional already converts its input with float(), so the string '7.125' behaves like a positive mixed number and any whole-part fix yields '7 1/8'."
+   ]
+  }
+ },
+ "b03-naturalsize-byte-plural": {
+  "tests/test_hidden.py::test_only_one_byte_is_singular[args0-0 Bytes]": {
+   "votes": [
+    "yes",
+    "yes",
+    "yes"
+   ],
+   "majority": "yes",
+   "why": [
+    "The report says only exactly one byte is singular, so 0.5 bytes (shown as 0) must be plural.",
+    "0.5 is not exactly one byte and shows as '0', so any fix that makes zero plural also gives '0 Bytes', whether it checks the raw or the displayed value.",
+    "0.5 bytes is not exactly one byte, so the report requires the plural, and it renders as '0 Bytes'."
+   ]
+  },
+  "tests/test_hidden.py::test_only_one_byte_is_singular[args1-0 Bytes]": {
+   "votes": [
+    "yes",
+    "yes",
+    "yes"
+   ],
+   "majority": "yes",
+   "why": [
+    "-0.5 is not exactly one byte, so the report requires the plural form, which displays as '0 Bytes'.",
+    "-0.5 formats with %d as '0' and is not exactly one byte, so every reasonable fix makes it plural, giving '0 Bytes'.",
+    "-0.5 is not exactly one byte, so the report requires the plural, and '%d' formatting renders it as '0 Bytes'."
+   ]
+  },
+  "tests/test_hidden.py::test_only_one_byte_is_singular[args2-1 Bytes]": {
+   "votes": [
+    "yes",
+    "no",
+    "unclear"
+   ],
+   "majority": "split",
+   "why": [
+    "1.5 is not exactly one byte, so the report's 'only exactly one byte should be singular' requires 'Bytes' even though the integer formatting shows 1.",
+    "A fix that bases the plural on the displayed integer, e.g. int(bytes) == 1, fully resolves the zero case but renders 1.5 as '1 Byte'; the report never addresses fractional values that display as 1.",
+    "1.5 is not exactly one byte, but it displays as '1', so a reasonable fix might choose singular from the shown integer and produce '1 Byte'; the report does not settle this."
+   ]
+  },
+  "tests/test_hidden.py::test_only_one_byte_is_singular[args3-0 Bytes]": {
+   "votes": [
+    "yes",
+    "yes",
+    "yes"
+   ],
+   "majority": "yes",
+   "why": [
+    "The binary flag does not change byte-level pluralization, and 0.25 is not exactly one byte, so it must be plural.",
+    "binary=True only changes the suffixes for larger units, and 0.25 is not one byte and shows as '0', so any fix gives '0 Bytes'.",
+    "With binary=True, a value below one KiB uses the same byte wording, and 0.25 is not exactly one byte, so the report requires '0 Bytes'."
+   ]
+  }
+ },
+ "b04-naturalsize-gnu-base": {
+  "tests/test_hidden.py::test_gnu_uses_powers_of_1024[1000-1000B]": {
+   "votes": [
+    "yes",
+    "yes",
+    "yes"
+   ],
+   "majority": "yes",
+   "why": [
+    "With powers of 1024, 1000 bytes falls below one K, and the library's existing GNU sub-unit format renders it as '1000B'.",
+    "With a 1024 base, 1000 bytes is below 1K, so it uses the existing GNU byte format '%dB' and gives '1000B'.",
+    "With a base of 1024, 1000 bytes is below 1K, so it keeps the existing GNU byte format '1000B', and a fix using powers of 1024 throughout has to produce that."
+   ]
+  },
+  "tests/test_hidden.py::test_gnu_uses_powers_of_1024[4096-4.0K]": {
+   "votes": [
+    "yes",
+    "yes",
+    "yes"
+   ],
+   "majority": "yes",
+   "why": [
+    "4096/1024 = 4.0 in the existing one-decimal GNU format, so any base-1024 fix yields '4.0K'.",
+    "4096/1024 = 4.0, so any fix that counts in powers of 1024 gives '4.0K'.",
+    "4096/1024 = 4.0, so this follows directly from the powers-of-1024 requirement."
+   ]
+  },
+  "tests/test_hidden.py::test_gnu_uses_powers_of_1024[5242880-5.0M]": {
+   "votes": [
+    "yes",
+    "yes",
+    "yes"
+   ],
+   "majority": "yes",
+   "why": [
+    "5*1024^2 divided by 1024^2 is exactly 5.0, so it gives '5.0M' under powers of 1024.",
+    "5*1024^2 divided by 1024^2 is exactly 5.0, which gives '5.0M' under a 1024 base.",
+    "5*1024^2 / 1024^2 = 5.0M, as required by GNU powers of 1024."
+   ]
+  },
+  "tests/test_hidden.py::test_gnu_uses_powers_of_1024[1000000000-953.7M]": {
+   "votes": [
+    "yes",
+    "yes",
+    "yes"
+   ],
+   "majority": "yes",
+   "why": [
+    "10^9 is below 1024^3, and 10^9/1024^2 ≈ 953.67, which rounds to '953.7M' under the base-1024 behaviour the report requires.",
+    "10^9/1024^2 ≈ 953.67, which the one-decimal GNU format renders as '953.7M' once powers of 1024 are used.",
+    "1e9 / 1024^2 ≈ 953.67, which formats as 953.7M under the existing one-decimal format."
+   ]
+  },
+  "tests/test_hidden.py::test_gnu_uses_powers_of_1024[7516192768-7.0G]": {
+   "votes": [
+    "yes",
+    "yes",
+    "yes"
+   ],
+   "majority": "yes",
+   "why": [
+    "7*1024^3 divided by 1024^3 is exactly 7.0, giving '7.0G' with base 1024.",
+    "7*1024^3 divided by 1024^3 is exactly 7.0, which gives '7.0G' under a 1024 base.",
+    "7*1024^3 / 1024^3 = 7.0G, as required by GNU powers of 1024."
+   ]
+  }
+ },
+ "b05-naturalsize-gnu-suffix": {
+  "tests/test_hidden.py::test_gnu_large_suffixes[1208925819614629174706176-1.0Y]": {
+   "votes": [
+    "yes",
+    "yes",
+    "yes"
+   ],
+   "majority": "yes",
+   "why": [
+    "2**80 bytes is exactly one yobibyte, so once the GNU suffix scale is correct as the report requires, it must render as '1.0Y'.",
+    "2**80 bytes is one yobibyte, so any fix that gives GNU suffixes their correct binary prefixes must return '1.0Y'.",
+    "2**80 bytes is one yobibyte, so any correct fix of the GNU suffix mapping that makes 2**70 map to Z must make 2**80 map to Y, giving '1.0Y'."
+   ]
+  },
+  "tests/test_hidden.py::test_gnu_large_suffixes[3541774862152233910272-3.0Z]": {
+   "votes": [
+    "yes",
+    "yes",
+    "yes"
+   ],
+   "majority": "yes",
+   "why": [
+    "3 * 2**70 is three zebibytes; it uses the same Z suffix and one-decimal format as the given test, so any correct fix yields '3.0Z'.",
+    "3*2**70 is three zebibytes, which is the same Z-range mapping the report requires, just scaled, so it gives '3.0Z'.",
+    "3*2**70 is in the zebibyte range, and the report requires that range to use the Z suffix, giving '3.0Z' in the same format as '1.0Z'."
+   ]
+  },
+  "tests/test_hidden.py::test_gnu_large_suffixes[6044629098073145873530880-5.0Y]": {
+   "votes": [
+    "yes",
+    "yes",
+    "yes"
+   ],
+   "majority": "yes",
+   "why": [
+    "5 * 2**80 is five yobibytes, which follows directly from the corrected binary suffix progression Z then Y.",
+    "5*2**80 is five yobibytes, so with correct prefix mapping a fixed implementation returns '5.0Y'.",
+    "5*2**80 is in the yobibyte range, and correct binary GNU suffixes map that range to Y, giving '5.0Y'."
+   ]
+  }
+ },
+ "b06-precisedelta-month-remainder": {
+  "tests/test_hidden.py::test_whole_months_leave_no_half_day[delta0-seconds-5 months]": {
+   "votes": [
+    "no",
+    "no",
+    "no"
+   ],
+   "majority": "no",
+   "why": [
+    "The report only fixes 31 days as one month, so a valid fix using 31-day months would render 153 days as '4 months and 29 days' rather than '5 months'.",
+    "The report only fixes the 31-day case; a valid fix that makes a month 31 days long would give '4 months and 29 days' for 153 days.",
+    "The report only fixes 31 days as one month; a correct fix that treats a month as 31 days would render 153 days as '4 months and 29 days'."
+   ]
+  },
+  "tests/test_hidden.py::test_whole_months_leave_no_half_day[delta1-seconds-1 month and 2 days]": {
+   "votes": [
+    "no",
+    "unclear",
+    "unclear"
+   ],
+   "majority": "unclear",
+   "why": [
+    "The report says nothing about how leftover days past a month (2 or 2.5 days) are counted, so different valid fixes could output '1 month, 2 days and 12 hours' or '1 month and 3 days'.",
+    "The report doesn't say whether the stray half day should go away in general or only for exactly 31 days, so a narrow fix could still output '1 month, 2 days and 12 hours'.",
+    "If 31 days is exactly a month, 33 days should leave 2 days, but a fix that only absorbs the half-day remainder near whole months could still produce '1 month, 2 days and 12 hours'."
+   ]
+  },
+  "tests/test_hidden.py::test_whole_months_leave_no_half_day[delta2-seconds-1 year and 1 month]": {
+   "votes": [
+    "yes",
+    "yes",
+    "yes"
+   ],
+   "majority": "yes",
+   "why": [
+    "Once the 365-day year is taken out, the remaining 31 days is exactly the case the report says must read as '1 month' with no leftover hours.",
+    "396 days is 1 year plus 31 days, and the report says 31 days must read as exactly 1 month.",
+    "After the 365-day year, the 31 days left over are exactly the case in the report, so any correct fix makes them read '1 month'."
+   ]
+  },
+  "tests/test_hidden.py::test_whole_months_leave_no_half_day[delta3-seconds-1 month and 3 hours]": {
+   "votes": [
+    "yes",
+    "yes",
+    "yes"
+   ],
+   "majority": "yes",
+   "why": [
+    "If 31 days is exactly one month, as the report requires, then 31 days and 3 hours can only be '1 month and 3 hours'.",
+    "If 31 days is exactly 1 month, the extra 3 hours can only render as '1 month and 3 hours'.",
+    "If 31 days is exactly one month as the report requires, the extra 3 hours remain as '3 hours'."
+   ]
+  },
+  "tests/test_hidden.py::test_whole_months_leave_no_half_day[delta4-hours-3 months]": {
+   "votes": [
+    "no",
+    "no",
+    "no"
+   ],
+   "majority": "no",
+   "why": [
+    "With 31-day months, 92 days becomes '2 months and 30 days', so the expected '3 months' depends on fix details the report does not specify.",
+    "It depends on 30.5-day months; a fix using 31-day months would give '2 months and 30 days'.",
+    "The report says nothing about 92 days; a correct fix that treats a month as 31 days would give '2 months and 30 days'."
+   ]
+  }
+ },
+ "b07-naturaldate-past-year": {
+  "tests/test_hidden.py::test_past_dates_get_a_year[day0-May 01 2008]": {
+   "votes": [
+    "yes",
+    "yes",
+    "yes"
+   ],
+   "majority": "yes",
+   "why": [
+    "This date is well over a year in the past, beyond the one-year boundary the report treats as needing a year, so every correct fix must include the year.",
+    "This date is well over a year in the past, so any fix that gives a year to past dates at least as far back as the reported one must show 'May 01 2008'.",
+    "This date is nearly two years in the past, so any fix that gives past dates their year the way future dates already get it must show 'May 01 2008'."
+   ]
+  },
+  "tests/test_hidden.py::test_past_dates_get_a_year[day1-Dec 31 1999]": {
+   "votes": [
+    "yes",
+    "yes",
+    "yes"
+   ],
+   "majority": "yes",
+   "why": [
+    "This date is a decade in the past, far beyond the one-year distance the report says must show a year, so any correct fix yields 'Dec 31 1999'.",
+    "This date is a decade in the past, and every fix that adds the year to dates one year ago or older must format it as 'Dec 31 1999'.",
+    "A date more than a decade in the past must clearly get its year once the past/future asymmetry is fixed."
+   ]
+  },
+  "tests/test_hidden.py::test_past_dates_get_a_year[day2-Aug 15 2009]": {
+   "votes": [
+    "no",
+    "no",
+    "yes"
+   ],
+   "majority": "no",
+   "why": [
+    "This date is only about 5.5 months ago, and the report says nothing about the cutoff below one year, so a correct fix that keeps a one-year threshold would return 'Aug 15' without the year.",
+    "This date is only about 5.5 months ago and the report never states the distance at which a year should appear, so a fix that adds the year only at a year or more would resolve the report but fail this case.",
+    "The report says future dates at the same distance already get their year, and about 5.5 months ahead does under the existing threshold, so a symmetric fix must also show the year for this past date."
+   ]
+  }
+ },
+ "b08-naturaltime-years-rounding": {
+  "tests/test_hidden.py::test_years_round_to_nearest__a0": {
+   "votes": [
+    "yes",
+    "yes",
+    "yes"
+   ],
+   "majority": "yes",
+   "why": [
+    "4.7 years rounds to 5 under any nearest-year rounding fix, and naturaltime delegates to naturaldelta, so the fix covers both.",
+    "4.7 years is well away from a rounding boundary, so any fix that rounds years to the nearest integer gives '5 years'.",
+    "4.7 years must round to 5 under the nearest-year rounding the report asks for, and naturaltime gets its year text from naturaldelta, so the fix covers both."
+   ]
+  },
+  "tests/test_hidden.py::test_years_round_to_nearest__a1": {
+   "votes": [
+    "yes",
+    "yes",
+    "yes"
+   ],
+   "majority": "yes",
+   "why": [
+    "About 10.53 years is clearly above the half-year mark, so any nearest rounding gives '11 years ago'.",
+    "About 10.53 years is clearly above the half-year boundary, so any rounding fix gives '11 years ago'.",
+    "About 10.53 years is clearly above the half-year point, so any nearest-year rounding gives '11 years ago' whatever happens at exact ties."
+   ]
+  },
+  "tests/test_hidden.py::test_years_round_to_nearest__a2": {
+   "votes": [
+    "yes",
+    "no",
+    "yes"
+   ],
+   "majority": "yes",
+   "why": [
+    "1141.8 years rounds to 1142 using the library's existing 365-day year, and the thousands-separator formatting is existing behaviour.",
+    "Over a millennium, small choices the report leaves open matter: a fix using a 365.25-day year gives about 1141.03, which rounds to '1,141 years'.",
+    "With the existing 365-day year and the existing comma formatting of large year counts, 1141.8 years rounds to '1,142 years'."
+   ]
+  },
+  "tests/test_hidden.py::test_years_round_to_nearest__a3": {
+   "votes": [
+    "yes",
+    "yes",
+    "yes"
+   ],
+   "majority": "yes",
+   "why": [
+    "Future deltas use the absolute value, so 7.8 years rounds to 8 and gets the existing 'from now' suffix.",
+    "Future deltas take the same magnitude path, and 7.8 years clearly rounds to 8, giving '8 years from now'.",
+    "A future delta goes through the same year rounding, so 7.8 must become '8 years from now'."
+   ]
+  }
+ },
+ "b09-naturaldate-aware-today": {
+  "tests/test_hidden.py::test_aware_values_use_their_own_today__a0": {
+   "votes": [
+    "no",
+    "no",
+    "yes"
+   ],
+   "majority": "no",
+   "why": [
+    "The report only concerns naturaldate, so a fix that resolves it inside naturaldate alone would leave naturalday comparing against the naive local date and returning 'tomorrow' here.",
+    "The report only covers naturaldate, so a correct fix confined to naturaldate could leave naturalday comparing against UTC today, giving 'tomorrow' here instead of 'today'.",
+    "At 23:00 UTC it is 01:00 on 16 Oct in UTC+2, so the value's own date equals its own today; naturaldate just delegates to naturalday, so any fix of the reported defect has to make naturalday compare against the value's own today."
+   ]
+  },
+  "tests/test_hidden.py::test_aware_values_use_their_own_today__a1": {
+   "votes": [
+    "no",
+    "no",
+    "yes"
+   ],
+   "majority": "no",
+   "why": [
+    "This tests naturalday, which the report never mentions, so a naturaldate-only fix would leave it returning 'today' instead of 'yesterday'.",
+    "A naturaldate-only fix would leave naturalday treating the value as 09:00 UTC on Oct 15 and returning 'today', not 'yesterday'.",
+    "In UTC+11 it is 10:00 on 16 Oct, so a value dated 15 Oct is 'yesterday' under the report's rule that the value's own timezone sets 'today'."
+   ]
+  },
+  "tests/test_hidden.py::test_aware_values_use_their_own_today__a2": {
+   "votes": [
+    "yes",
+    "yes",
+    "yes"
+   ],
+   "majority": "yes",
+   "why": [
+    "This is the same naturaldate defect with a different offset (in +05:30 it is already 16 Oct 04:30), so any correct fix must return 'today'.",
+    "This is the same naturaldate behavior with another offset: it is already Oct 16 in +05:30, so any correct fix must return 'today'.",
+    "This is naturaldate itself: in UTC+5:30 it is 04:30 on 16 Oct, so a value on 16 Oct must be 'today', exactly as in the report."
+   ]
+  },
+  "tests/test_hidden.py::test_aware_values_use_their_own_today__a3": {
+   "votes": [
+    "no",
+    "yes",
+    "yes"
+   ],
+   "majority": "yes",
+   "why": [
+    "This exercises naturalday rather than naturaldate, so a fix confined to naturaldate could leave it returning 'Oct 17'.",
+    "The value is Oct 17 in its own zone (today Oct 16) and Oct 16 in UTC (today Oct 15), so 'tomorrow' results whether or not naturalday is changed.",
+    "In UTC+11 it is 16 Oct, so a value on 17 Oct is 'tomorrow' under the report's rule; this applies the same delegation as a0."
+   ]
+  }
+ },
+ "b10-natural-list-empty": {
+  "tests/test_hidden.py::test_empty_iterables__a0": {
+   "votes": [
+    "yes",
+    "yes",
+    "yes"
+   ],
+   "majority": "yes",
+   "why": [
+    "An empty tuple supports len and truthiness like an empty list, so any fix that returns '' for an empty sequence also returns '' here.",
+    "Any natural empty-input guard (`if not items` or `len(items) == 0`) treats an empty tuple the same as an empty list, so a correct fix returns an empty string here too.",
+    "An empty tuple supports len() and is falsy, so any natural emptiness guard such as `if not items` or `len(items) == 0` returns '' just as it does for an empty list."
+   ]
+  },
+  "tests/test_hidden.py::test_empty_iterables__a1": {
+   "votes": [
+    "no",
+    "no",
+    "no"
+   ],
+   "majority": "no",
+   "why": [
+    "A correct fix such as `if not items: return ''` or `if len(items) == 0` would raise TypeError or fall through on an iterator, because iterators are truthy and have no len.",
+    "The report only covers empty lists; an iterator has no len() or indexing, and an empty iterator is truthy, so a correct list-focused fix would still raise for it.",
+    "The report only covers empty lists; an iterator has no len(), is always truthy and cannot be indexed, so a correct list-focused fix would still raise on it."
+   ]
+  },
+  "tests/test_hidden.py::test_empty_iterables__a2": {
+   "votes": [
+    "no",
+    "no",
+    "no"
+   ],
+   "majority": "no",
+   "why": [
+    "A generator has no len and is always truthy, so a minimal empty-list guard would fail on it even though it fully fixes the reported list case.",
+    "Generators are truthy and don't support len() or indexing, so a fix that fully resolves the empty-list bug could still raise here.",
+    "A generator has no len(), is always truthy and cannot be indexed, so supporting it would require materializing the iterable, which the report never asks for."
+   ]
+  },
+  "tests/test_hidden.py::test_empty_iterables__a3": {
+   "votes": [
+    "yes",
+    "yes",
+    "yes"
+   ],
+   "majority": "yes",
+   "why": [
+    "An empty set is falsy and has len 0, so any natural empty-check guard returns '' before any indexing happens.",
+    "An empty set is falsy and has len 0, so the usual empty guard returns an empty string before any indexing is attempted.",
+    "An empty set is falsy and has len 0, so a guard placed before any indexing returns '' without ever indexing the set."
+   ]
+  }
+ }
+}

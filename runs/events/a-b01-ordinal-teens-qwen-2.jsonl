@@ -1,0 +1,13 @@
+{"tool": "read_file", "args": {"path": "tests/test_issue.py"}}
+{"tool": "run_command", "args": {"command": "python pytest -q -p no:cacheprovider --ignore=tests/test_benchmarks.py --deselect tests/test_i18n.py::test_update_translations"}}
+{"tool": "run_command", "args": {"command": "cd /testbed && python -m pytest tests/test_issue.py::test_ordinal_of_113 -v"}}
+{"tool": "list_dir", "args": {"path": "."}}
+{"tool": "list_dir", "args": {"path": "src"}}
+{"tool": "run_command", "args": {"command": "python -m pytest tests/test_issue.py::test_ordinal_of_113 -v"}}
+{"tool": "list_dir", "args": {"path": "src/humanize"}}
+{"tool": "search", "args": {"path": "src/humanize", "pattern": "def ordinal"}}
+{"tool": "read_file", "args": {"path": "src/humanize/number.py"}}
+{"tool": "replace_in_file", "args": {"path": "src/humanize/number.py", "old": "    digit = 0 if value % 100 in (11, 12) else value % 10", "new": "    digit = 0 if value % 100 in (11, 12, 13) else value % 10"}}
+{"tool": "run_command", "args": {"command": "python -m pytest tests/test_issue.py::test_ordinal_of_113 -v"}}
+{"tool": "run_command", "args": {"command": "python -m pytest tests/test_issue.py -v"}}
+{"tool": "run_command", "args": {"command": "python -c \"from humanize import ordinal; print(f'11: {ordinal(11)}'); print(f'12: {ordinal(12)}'); print(f'13: {ordinal(13)}'); print(f'14: {ordinal(14)}'); print(f'111: {ordinal(111)}'); print(f'112: {ordinal(112)}'); print(f'113: {ordinal(113)}')\""}}

@@ -1,0 +1,15 @@
+{
+  "id": "t09-length-myfilter-le",
+  "name": "length_myFilter_le",
+  "difficulty": "medium",
+  "prelude": "def myFilter (p : α → Bool) : List α → List α\n  | [] => []\n  | x :: xs => if p x then x :: myFilter p xs else myFilter p xs\n",
+  "statement": "theorem length_myFilter_le (p : α → Bool) (xs : List α) : (myFilter p xs).length ≤ xs.length",
+  "proofs": [
+    "  induction xs with\n  | nil => simp [myFilter]\n  | cons x xs ih => cases h : p x <;> simp [myFilter, h] <;> omega\n",
+    "  have filter_eq (zs : List α) : myFilter p zs = zs.filter p := by\n    induction zs with\n    | nil => rfl\n    | cons z zs ih => cases h : p z <;> simp [myFilter, List.filter, h, ih]\n  rw [filter_eq]\n  exact List.length_filter_le p xs\n"
+  ],
+  "strategies": [
+    "Direct induction with a Boolean case split on each head.",
+    "Identify myFilter with List.filter, then use the library length bound."
+  ]
+}

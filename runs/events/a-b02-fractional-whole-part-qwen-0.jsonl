@@ -1,0 +1,14 @@
+{"tool": "read_file", "args": {"path": "tests/test_issue.py"}}
+{"tool": "run_command", "args": {"command": "python pytest -q -p no:cacheprovider --ignore=tests/test_benchmarks.py --deselect tests/test_i18n.py::test_update_translations"}}
+{"tool": "search", "args": {"pattern": "def fractional", "path": "."}}
+{"tool": "list_dir", "args": {"path": "."}}
+{"tool": "read_file", "args": {"path": "src/humanize/number.py"}}
+{"tool": "replace_in_file", "args": {"path": "src/humanize/number.py", "old": "    if whole_number:\n        return f\"{numerator:.0f}/{denominator:.0f}\"", "new": "    if whole_number:\n        return f\"{whole_number} {numerator:.0f}/{denominator:.0f}\""}}
+{"tool": "run_command", "args": {"command": "cd src && python -c \"from humanize import number; print(number.fractional(2.75))\""}}
+{"tool": "run_command", "args": {"command": "cd src && python -c \"from humanize import number; print(fractional(0.3)); print(fractional(1.3)); print(fractional(1)); print(fractional(1/3))\""}}
+{"tool": "run_command", "args": {"command": "cd src && python -c \"from humanize.number import fractional; print(fractional(0.3)); print(fractional(1.3)); print(fractional(1)); print(fractional(1/3))\""}}
+{"tool": "run_command", "args": {"command": "cd python-home && python -m pytest -q -p no:cacheprovider --ignore=tests/test_benchmarks.py --deselect tests/test_i18n.py::test_update_translations tests/test_issue.py::test_fractional_keeps_whole_part"}}
+{"tool": "run_command", "args": {"command": "cd /root/personal-website-wt-path-eval-v2/experiments/path-evaluation-v2 && python -m pytest -q -p no:cacheprovider --ignore=tests/test_benchmarks.py --deselect tests/test_i18n.py::test_update_translations tests/test_issue.py::test_fractional_keeps_whole_part"}}
+{"tool": "run_command", "args": {"command": "pwd && ls -la"}}
+{"tool": "run_command", "args": {"command": "python -m pytest -q -p no:cacheprovider --ignore=tests/test_benchmarks.py --deselect tests/test_i18n.py::test_update_translations tests/test_issue.py::test_fractional_keeps_whole_part"}}
+{"tool": "run_command", "args": {"command": "python -m pytest -q -p no:cacheprovider --ignore=tests/test_benchmarks.py --deselect tests/test_i18n.py::test_update_translations"}}

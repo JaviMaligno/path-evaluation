@@ -1,0 +1,8 @@
+{"tool": "read_file", "args": {"path": "Main.lean"}}
+{"tool": "replace_in_file", "args": {"path": "Main.lean", "old": "theorem double_eq (n : Nat) : double n = 2 * n := by\n  sorry", "new": "theorem double_eq (n : Nat) : double n = 2 * n := by\n  induction n with\n  | zero => rfl\n  | succ n ih =>\n    simp [double] at *\n    rw [ih]\n    simp only [Nat.mul_succ, add_assoc]\n    rfl"}}
+{"tool": "run_command", "args": {"command": "lean Main.lean"}}
+{"tool": "replace_in_file", "args": {"path": "Main.lean", "old": "theorem double_eq (n : Nat) : double n = 2 * n := by\n  induction n with\n  | zero => rfl\n  | succ n ih =>\n    simp [double] at *\n    rw [ih]\n    simp only [Nat.mul_succ, add_assoc]\n    rfl", "new": "theorem double_eq (n : Nat) : double n = 2 * n := by\n  induction n with\n  | zero => rfl\n  | succ n ih =>\n    rw [double]\n    rw [ih]\n    simp only [Nat.mul_succ, Nat.add_assoc]\n    rfl"}}
+{"tool": "run_command", "args": {"command": "lean Main.lean"}}
+{"tool": "replace_in_file", "args": {"path": "Main.lean", "old": "theorem double_eq (n : Nat) : double n = 2 * n := by\n  induction n with\n  | zero => rfl\n  | succ n ih =>\n    rw [double]\n    rw [ih]\n    simp only [Nat.mul_succ, Nat.add_assoc]\n    rfl", "new": "theorem double_eq (n : Nat) : double n = 2 * n := by\n  induction n with\n  | zero => rfl\n  | succ n ih =>\n    rw [double, ih]\n    simp only [Nat.mul_succ]"}}
+{"tool": "run_command", "args": {"command": "lean Main.lean"}}
+{"tool": "read_file", "args": {"path": "Main.lean"}}

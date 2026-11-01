@@ -1,0 +1,15 @@
+{
+  "id": "t12-times-eq-mul",
+  "name": "times_eq_mul",
+  "difficulty": "medium",
+  "prelude": "def times : Nat → Nat → Nat\n  | 0, _ => 0\n  | n + 1, m => times n m + m\n",
+  "statement": "theorem times_eq_mul (n m : Nat) : times n m = n * m",
+  "proofs": [
+    "  induction n with\n  | zero => simp [times]\n  | succ n ih => simp [times, ih, Nat.succ_mul]\n",
+    "  have zero_right (a : Nat) : times a 0 = 0 := by\n    induction a with\n    | zero => rfl\n    | succ a ih => simp [times, ih]\n  have succ_right (a b : Nat) : times a (b + 1) = times a b + a := by\n    induction a with\n    | zero => simp [times]\n    | succ a ih => simp [times, ih]; omega\n  induction m with\n  | zero => simp [zero_right]\n  | succ m ih => rw [succ_right, ih, Nat.mul_succ]\n"
+  ],
+  "strategies": [
+    "Induction on n, the recursive argument.",
+    "Induction on m after proving zero-right and successor-right identities."
+  ]
+}

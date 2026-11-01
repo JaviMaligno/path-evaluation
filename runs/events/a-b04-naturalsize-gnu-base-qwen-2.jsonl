@@ -1,0 +1,11 @@
+{"tool": "run_command", "args": {"command": "python pytest -q -p no:cacheprovider --ignore=tests/test_benchmarks.py --deselect tests/test_i18n.py::test_update_translations -k \"issue\""}}
+{"tool": "list_dir", "args": {"path": "."}}
+{"tool": "search", "args": {"path": "src", "pattern": "def naturalsize"}}
+{"tool": "read_file", "args": {"path": "tests/test_issue.py"}}
+{"tool": "read_file", "args": {"path": "src/humanize/filesize.py"}}
+{"tool": "replace_in_file", "args": {"path": "src/humanize/filesize.py", "old": "    base = 1024 if binary else 1000", "new": "    base = 1024 if gnu or binary else 1000"}}
+{"tool": "run_command", "args": {"command": "python -m pytest tests/test_issue.py::test_gnu_3000_bytes -q"}}
+{"tool": "run_command", "args": {"command": "python -m pytest tests/test_issue.py -q"}}
+{"tool": "run_command", "args": {"command": "python -m pytest tests/test_filesize.py -q"}}
+{"tool": "run_command", "args": {"command": "python -c \"import humanize; print(humanize.naturalsize(3000, gnu=True)); print(humanize.naturalsize(3000000, gnu=True))\""}}
+{"tool": "run_command", "args": {"command": "python -m pytest tests/ --ignore=tests/test_benchmarks.py --deselect tests/test_i18n.py::test_update_translations -q --tb=no"}}
