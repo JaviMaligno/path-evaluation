@@ -9,14 +9,14 @@ qwen     30    22              8
 grader  FP  FN
 E0      21   0
 E1      20  15
-E2      13 115
+E2      11 120
 E3      14  25
 E3-reads   2 116
 tau curve (E3): tau FP FN
   0.50  18   0
-  0.55  18   4
-  0.60  18   4
-  0.65  16   6
+  0.55  18   5
+  0.60  18   5
+  0.65  16   7
   0.70  16   7
   0.75  16   7
   0.80  14  25
@@ -81,22 +81,22 @@ E3-false / truth-true pairs on the same task:
   b02-fractional-whole-part: rejected ('codex', 2, 0.75) vs accepted ('opus', 2, 1.0)
   b02-fractional-whole-part: rejected ('codex', 2, 0.75) vs accepted ('luna', 0, 1.0)
   b02-fractional-whole-part: rejected ('codex', 2, 0.75) vs accepted ('luna', 2, 1.0)
-  b03-naturalsize-byte-plural: rejected ('qwen', 1, 0.667) vs accepted ('haiku', 0, 1.0)
-  b03-naturalsize-byte-plural: rejected ('qwen', 1, 0.667) vs accepted ('haiku', 1, 1.0)
-  b03-naturalsize-byte-plural: rejected ('qwen', 1, 0.667) vs accepted ('haiku', 2, 1.0)
-  b03-naturalsize-byte-plural: rejected ('qwen', 1, 0.667) vs accepted ('sonnet', 0, 1.0)
-  b03-naturalsize-byte-plural: rejected ('qwen', 1, 0.667) vs accepted ('sonnet', 1, 1.0)
-  b03-naturalsize-byte-plural: rejected ('qwen', 1, 0.667) vs accepted ('sonnet', 2, 1.0)
-  b03-naturalsize-byte-plural: rejected ('qwen', 1, 0.667) vs accepted ('opus', 1, 1.0)
-  b03-naturalsize-byte-plural: rejected ('qwen', 1, 0.667) vs accepted ('opus', 2, 1.0)
-  b03-naturalsize-byte-plural: rejected ('qwen', 1, 0.667) vs accepted ('codex', 0, 1.0)
-  b03-naturalsize-byte-plural: rejected ('qwen', 1, 0.667) vs accepted ('codex', 1, 1.0)
-  b03-naturalsize-byte-plural: rejected ('qwen', 1, 0.667) vs accepted ('codex', 2, 1.0)
-  b03-naturalsize-byte-plural: rejected ('qwen', 1, 0.667) vs accepted ('luna', 0, 1.0)
-  b03-naturalsize-byte-plural: rejected ('qwen', 1, 0.667) vs accepted ('luna', 1, 1.0)
-  b03-naturalsize-byte-plural: rejected ('qwen', 1, 0.667) vs accepted ('luna', 2, 1.0)
-  b03-naturalsize-byte-plural: rejected ('qwen', 1, 0.667) vs accepted ('qwen', 0, 1.0)
-  b03-naturalsize-byte-plural: rejected ('qwen', 1, 0.667) vs accepted ('qwen', 2, 1.0)
+  b03-naturalsize-byte-plural: rejected ('qwen', 1, 0.5) vs accepted ('haiku', 0, 1.0)
+  b03-naturalsize-byte-plural: rejected ('qwen', 1, 0.5) vs accepted ('haiku', 1, 1.0)
+  b03-naturalsize-byte-plural: rejected ('qwen', 1, 0.5) vs accepted ('haiku', 2, 1.0)
+  b03-naturalsize-byte-plural: rejected ('qwen', 1, 0.5) vs accepted ('sonnet', 0, 1.0)
+  b03-naturalsize-byte-plural: rejected ('qwen', 1, 0.5) vs accepted ('sonnet', 1, 1.0)
+  b03-naturalsize-byte-plural: rejected ('qwen', 1, 0.5) vs accepted ('sonnet', 2, 1.0)
+  b03-naturalsize-byte-plural: rejected ('qwen', 1, 0.5) vs accepted ('opus', 1, 1.0)
+  b03-naturalsize-byte-plural: rejected ('qwen', 1, 0.5) vs accepted ('opus', 2, 1.0)
+  b03-naturalsize-byte-plural: rejected ('qwen', 1, 0.5) vs accepted ('codex', 0, 1.0)
+  b03-naturalsize-byte-plural: rejected ('qwen', 1, 0.5) vs accepted ('codex', 1, 1.0)
+  b03-naturalsize-byte-plural: rejected ('qwen', 1, 0.5) vs accepted ('codex', 2, 1.0)
+  b03-naturalsize-byte-plural: rejected ('qwen', 1, 0.5) vs accepted ('luna', 0, 1.0)
+  b03-naturalsize-byte-plural: rejected ('qwen', 1, 0.5) vs accepted ('luna', 1, 1.0)
+  b03-naturalsize-byte-plural: rejected ('qwen', 1, 0.5) vs accepted ('luna', 2, 1.0)
+  b03-naturalsize-byte-plural: rejected ('qwen', 1, 0.5) vs accepted ('qwen', 0, 1.0)
+  b03-naturalsize-byte-plural: rejected ('qwen', 1, 0.5) vs accepted ('qwen', 2, 1.0)
   b05-naturalsize-gnu-suffix: rejected ('codex', 0, 0.75) vs accepted ('haiku', 0, 1.0)
   b05-naturalsize-gnu-suffix: rejected ('codex', 0, 0.75) vs accepted ('haiku', 1, 1.0)
   b05-naturalsize-gnu-suffix: rejected ('codex', 0, 0.75) vs accepted ('haiku', 2, 1.0)

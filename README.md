@@ -68,6 +68,13 @@ ASCII spellings Lean reads as the same token (`->` for `→`, `<=`, `>=`, leadin
 world A's truth is also given limited to the hidden cases a blind judge says follow from the report
 (three votes, majority, with the issue test as a control).
 
+**Known flaw in world A's prompt.** `world_a.TEST_CMD` gives the test command as `python pytest ...`
+(the `-m` is lost when it is built from `PYTEST[1:]`). That command opens a file named `pytest` and exits 2
+before running any test; most agents noticed and ran `python -m pytest`. It is kept as it was run, so the
+episodes stay reproducible, and `shellcmd.py` does not count `python pytest` as a test run. That correction
+moved the order-obligation figures (Qwen ran the tests before its first edit in 13 of 22 valid fixes, not 19;
+E2 passes 11 invalid fixes and fails 120 valid ones, not 13 and 115); nothing else changed.
+
 ## Running it yourself
 
 Written for and run on Windows 11. Notes that matter if you rerun it:
